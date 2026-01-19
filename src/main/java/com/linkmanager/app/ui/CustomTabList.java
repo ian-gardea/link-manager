@@ -1,3 +1,7 @@
+package main.java.com.linkmanager.app.ui;
+
+import main.java.com.linkmanager.app.LinkManager;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

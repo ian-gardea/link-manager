@@ -1,3 +1,5 @@
+package main.java.com.linkmanager.app.ui;
+
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;

@@ -1,3 +1,7 @@
+package main.java.com.linkmanager.app.ui;
+
+import main.java.com.linkmanager.app.LinkManager;
+
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;

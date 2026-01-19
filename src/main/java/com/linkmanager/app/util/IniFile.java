@@ -1,3 +1,4 @@
+package main.java.com.linkmanager.app.util;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

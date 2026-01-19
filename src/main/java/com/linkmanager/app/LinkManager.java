@@ -1,3 +1,12 @@
+package main.java.com.linkmanager.app;
+
+import main.java.com.linkmanager.app.util.IniFile;
+
+import main.java.com.linkmanager.app.ui.CustomLinkPane;
+import main.java.com.linkmanager.app.ui.CustomTabList;
+import main.java.com.linkmanager.app.ui.DropTargetHandler;
+import main.java.com.linkmanager.app.ui.TabInputHandler;
+import main.java.com.linkmanager.app.ui.TableTransferHandler;
 
 import java.awt.Cursor;
 import java.awt.Desktop;
@@ -61,7 +70,7 @@ public class LinkManager{
         // Initialize file pointers.
 		try {
 	        
-			INI = new IniFile("./config.ini");
+			INI = new IniFile("./src/main/resources/config.ini");
 			
 			FILE       = new File("./session.xml");
 			README     = new File("./README.txt");

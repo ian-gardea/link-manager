@@ -1,3 +1,5 @@
+package main.java.com.linkmanager.app.ui;
+
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -13,7 +15,7 @@ import javax.swing.table.DefaultTableModel;
  * @author Ian Gardea
  *
  */
-class TableTransferHandler extends MouseAdapter {
+public class TableTransferHandler extends MouseAdapter {
 
 	// Placing static definitions at the top of this class.
 	private static TableTransferHandler handler;

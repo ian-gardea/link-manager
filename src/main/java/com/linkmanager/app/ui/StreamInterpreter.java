@@ -1,3 +1,5 @@
+package main.java.com.linkmanager.app.ui;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,3 +1,7 @@
+package main.java.com.linkmanager.app.ui;
+
+import main.java.com.linkmanager.app.LinkManager;
+
 import java.awt.BorderLayout;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;

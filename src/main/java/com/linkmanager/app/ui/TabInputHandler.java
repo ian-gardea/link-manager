@@ -1,3 +1,7 @@
+package main.java.com.linkmanager.app.ui;
+
+import main.java.com.linkmanager.app.LinkManager;
+
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
