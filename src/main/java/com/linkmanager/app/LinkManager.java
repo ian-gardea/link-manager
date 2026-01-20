@@ -46,14 +46,13 @@ public class LinkManager {
 	private static final String VERSION;
 	private static final String JRE;
 
-	private static AppConfig INI; // Configuration file that holds customizable settings.
 	private static File FILE;
 	private static File README;
 	private static JFrame FRAME;
 
-	public static final int SLEEPTIME;
-	public static final int GUIWIDTH;
-	public static final int GUIHEIGHT;
+	public static int SLEEP_TIME;
+	public static int GUI_WIDTH;
+	public static int GUI_HEIGHT;
 	public static String CUSTOM_VAR;
 
 	private static CustomTabList tabbedList = null;
@@ -68,18 +67,10 @@ public class LinkManager {
 
 		// Initialize file pointers.
 		try {
-
-			INI = new AppConfig("./src/main/resources/config.ini");
-
 			FILE = new File("./session.xml");
 			README = new File("./README.txt");
-		} catch (IOException ex) {
-			JOptionPane.showMessageDialog(LinkManager.FRAME,
-					"An error occurred reading the INI file." + ex.getLocalizedMessage(), "I/O Exception",
-					JOptionPane.ERROR_MESSAGE);
-			System.exit(1);
 		} catch (NullPointerException ex) {
-			String iniErrMessage = "An error occurred when trying to load INI file key \"" + INI.getLastKey() + "\".";
+			String iniErrMessage = "An error occurred when trying to load INI file key \"" + AppConfig.getInstance().getLastKey() + "\".";
 			JOptionPane.showMessageDialog(LinkManager.FRAME, iniErrMessage, "I/O Exception", JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		} catch (Exception ex) {
@@ -88,12 +79,6 @@ public class LinkManager {
 			System.exit(1);
 		}
 
-		// Ensure global variables are assigned a value by defining them outside the
-		// try/catch.
-		CUSTOM_VAR = INI.getString("global", "customVarValue", "CUSTOM_VAR");
-		SLEEPTIME = INI.getInt("gui", "sleepTime", 2000);
-		GUIWIDTH = INI.getInt("gui", "guiWidth", 480);
-		GUIHEIGHT = INI.getInt("gui", "guiHeight", 600);
 	}
 
 	/**
@@ -104,9 +89,30 @@ public class LinkManager {
 	public LinkManager() {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+				initAppConfigValues();
 				createAndShowGUI();
 			}
 		});
+	}
+
+	/**
+	 * Reads the configuration INI file one time at the start of the program such
+	 * that the values can be used anywhere else in the program.
+	 * 
+	 */
+	private static void initAppConfigValues() {
+
+		try {
+			AppConfig.init("./src/main/resources/config.ini");
+
+			// Accessible from anywhere in the program.
+			CUSTOM_VAR = AppConfig.getInstance().getString("global", "customVarValue", "CUSTOM_VAR");
+			SLEEP_TIME = AppConfig.getInstance().getInt("gui", "sleepTime", 2000);
+			GUI_WIDTH = AppConfig.getInstance().getInt("gui", "guiWidth", 480);
+			GUI_HEIGHT = AppConfig.getInstance().getInt("gui", "guiHeight", 600);
+		} catch (IOException e) {
+			System.err.println("Failed to load configuration: " + e.getMessage());
+		}
 	}
 
 	/**
@@ -443,7 +449,7 @@ public class LinkManager {
 		FRAME.add(tabbedList);
 
 		// Set JFRAME preferences.
-		FRAME.setPreferredSize(new Dimension(GUIWIDTH, GUIHEIGHT));
+		FRAME.setPreferredSize(new Dimension(GUI_WIDTH, GUI_HEIGHT));
 		FRAME.setResizable(false);
 		FRAME.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		FRAME.setVisible(true);

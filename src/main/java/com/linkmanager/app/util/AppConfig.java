@@ -9,13 +9,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Source:
- * https://stackoverflow.com/questions/190629/what-is-the-easiest-way-to-parse-an-ini-file-in-java
- * 
  * @author Ian Gardea
  *
  */
 public class AppConfig {
+
+	private static AppConfig instance;
 
 	private Pattern _section = Pattern.compile("\\s*\\[([^]]*)\\]\\s*");
 	private Pattern _keyValue = Pattern.compile("\\s*([^=]*)=(.*)");
@@ -23,11 +22,7 @@ public class AppConfig {
 
 	private String lastKey; // Track which key was accessed.
 
-	public AppConfig(String path) throws IOException {
-		load(path);
-	}
-
-	public void load(String path) throws IOException {
+	private AppConfig(String path) throws IOException {
 		try (BufferedReader br = new BufferedReader(new FileReader(path))) {
 			String line;
 			String section = null;
@@ -51,6 +46,38 @@ public class AppConfig {
 		}
 	}
 
+	/**
+	 * Initialize the configuration manager as static (which will be called one time
+	 * at application startup).
+	 * 
+	 * @param filePath
+	 * @throws IOException
+	 */
+	public static void init(String filePath) throws IOException {
+		if (instance == null) {
+			instance = new AppConfig(filePath);
+		}
+	}
+
+	/**
+	 * Get the instance of this class.
+	 * 
+	 * @return AppConfig instance.
+	 */
+	public static AppConfig getInstance() {
+		if (instance == null) {
+			throw new IllegalStateException("AppConfig not initialized. Call init() first.");
+		}
+		return instance;
+	}
+
+	/**
+	 * 
+	 * @param section
+	 * @param key
+	 * @param defaultvalue
+	 * @return the value in the provided key/section as a string.
+	 */
 	public String getString(String section, String key, String defaultvalue) {
 		Map<String, String> kv = _entries.get(section);
 		if (kv == null) {
@@ -59,6 +86,13 @@ public class AppConfig {
 		return kv.get(key);
 	}
 
+	/**
+	 * 
+	 * @param section
+	 * @param key
+	 * @param defaultvalue
+	 * @return the value in the provided key/section as an int.
+	 */
 	public int getInt(String section, String key, int defaultvalue) {
 		Map<String, String> kv = _entries.get(section);
 		if (kv == null) {
@@ -67,6 +101,13 @@ public class AppConfig {
 		return Integer.parseInt(kv.get(key));
 	}
 
+	/**
+	 * 
+	 * @param section
+	 * @param key
+	 * @param defaultvalue
+	 * @return the value in the provided key/section as a float.
+	 */
 	public float getFloat(String section, String key, float defaultvalue) {
 		Map<String, String> kv = _entries.get(section);
 		if (kv == null) {
@@ -75,6 +116,13 @@ public class AppConfig {
 		return Float.parseFloat(kv.get(key));
 	}
 
+	/**
+	 * 
+	 * @param section
+	 * @param key
+	 * @param defaultvalue
+	 * @return the value in the provided key/section as a double.
+	 */
 	public double getDouble(String section, String key, double defaultvalue) {
 		Map<String, String> kv = _entries.get(section);
 		if (kv == null) {
@@ -83,6 +131,10 @@ public class AppConfig {
 		return Double.parseDouble(kv.get(key));
 	}
 
+	/**
+	 * 
+	 * @return the last key that was accessed.
+	 */
 	public String getLastKey() {
 		return lastKey;
 	}

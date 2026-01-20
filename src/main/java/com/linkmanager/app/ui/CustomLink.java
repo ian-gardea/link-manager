@@ -331,7 +331,7 @@ public class CustomLink extends JLabel {
 					// For instance, setting this sleep timer allow tabs to be created in web
 					// browsers when multiple URLs are being opened.
 					// If this is not done, then it possible that not every selected link will run.
-					writer.println("ping 1.1.1.1 -n 1 -w " + LinkManager.SLEEPTIME + ">nul");
+					writer.println("ping 1.1.1.1 -n 1 -w " + LinkManager.SLEEP_TIME + ">nul");
 					writer.close();
 
 					// The below will run the windows batch file based on the version of windows
