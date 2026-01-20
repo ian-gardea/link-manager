@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  * @author Ian Gardea
  *
  */
-public class IniFile {
+public class AppConfig {
 
    private Pattern  _section  = Pattern.compile( "\\s*\\[([^]]*)\\]\\s*" );
    private Pattern  _keyValue = Pattern.compile( "\\s*([^=]*)=(.*)" );
@@ -23,7 +23,7 @@ public class IniFile {
 
    private String lastKey;     // Track which key was accessed.
          
-   public IniFile( String path ) throws IOException {
+   public AppConfig( String path ) throws IOException {
       load( path );
    }
 

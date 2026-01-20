@@ -1,6 +1,6 @@
 package main.java.com.linkmanager.app;
 
-import main.java.com.linkmanager.app.util.IniFile;
+import main.java.com.linkmanager.app.util.AppConfig;
 
 import main.java.com.linkmanager.app.ui.CustomLinkPane;
 import main.java.com.linkmanager.app.ui.CustomTabList;
@@ -47,7 +47,7 @@ public class LinkManager{
 	private static final String VERSION;    
 	private static final String JRE;
 	
-	private static IniFile INI; // Configuration file that holds customizable settings.
+	private static AppConfig INI; // Configuration file that holds customizable settings.
 	private static File   FILE;
 	private static File   README;
 	private static JFrame FRAME;
@@ -70,7 +70,7 @@ public class LinkManager{
         // Initialize file pointers.
 		try {
 	        
-			INI = new IniFile("./src/main/resources/config.ini");
+			INI = new AppConfig("./src/main/resources/config.ini");
 			
 			FILE       = new File("./session.xml");
 			README     = new File("./README.txt");
