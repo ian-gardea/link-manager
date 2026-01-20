@@ -18,6 +18,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Paths;
@@ -34,53 +35,38 @@ import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import java.util.Properties;
+
 /**
  * This program allows the dynamic creation, and execution of links, and DOS
  * commands. See the README documentation for a full description of features.
  * 
  * @author Ian Gardea
- * @version 1.0.1
+ * @version 1.0.3
  * 
  */
 public class LinkManager {
-	private static final String VERSION;
-	private static final String JRE;
+	/* static variables: only need to be initialized once */
+	// properties
+	private static String APP_NAME;
+	private static String APP_VERSION;
+	private static String APP_JRE;
 
 	private static File FILE;
 	private static File README;
 	private static JFrame FRAME;
 
-	public static int SLEEP_TIME;
-	public static int GUI_WIDTH;
-	public static int GUI_HEIGHT;
-	public static String CUSTOM_VAR;
+	private final static String RESOURCES_PATH = "./src/main/resources/";
 
 	private static CustomTabList tabbedList = null;
 	private static boolean isLocked;
 
-	static {
-		// These variables can only be changed during development.
-		VERSION = "1.0.1"; // TODO: Please update on every subsequent code change.
-		JRE = "1.7.0_45"; // TODO: Please update if tested on a later JRE.
-
-		FRAME = new JFrame("Link Manager v" + VERSION);
-
-		// Initialize file pointers.
-		try {
-			FILE = new File("./session.xml");
-			README = new File("./README.txt");
-		} catch (NullPointerException ex) {
-			String iniErrMessage = "An error occurred when trying to load INI file key \"" + AppConfig.getInstance().getLastKey() + "\".";
-			JOptionPane.showMessageDialog(LinkManager.FRAME, iniErrMessage, "I/O Exception", JOptionPane.ERROR_MESSAGE);
-			System.exit(1);
-		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(LinkManager.FRAME, ex.getLocalizedMessage(), "Unknown Error",
-					JOptionPane.ERROR_MESSAGE);
-			System.exit(1);
-		}
-
-	}
-
+	// user configuration variables.
+	public static int SLEEP_TIME;
+	public static int GUI_WIDTH;
+	public static int GUI_HEIGHT;
+	public static String CUSTOM_VAR;
+	
 	/**
 	 * Schedules a job for the event-dispatching thread to create, and show the main
 	 * GUI.
@@ -89,21 +75,50 @@ public class LinkManager {
 	public LinkManager() {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+				FRAME = new JFrame(APP_NAME + " v" + APP_VERSION);
+
+				initLinkManagerProperties();
 				initAppConfigValues();
+				initSessionFile();
+				initReadMeFile();
 				createAndShowGUI();
 			}
 		});
 	}
 
 	/**
-	 * Reads the configuration INI file one time at the start of the program such
-	 * that the values can be used anywhere else in the program.
+	 * Reads the program's properties file one time at launch such that the values
+	 * can be used anywhere else in the program.
+	 * 
+	 */
+	private static void initLinkManagerProperties() {
+
+		try {
+
+			Properties props = new Properties();
+
+			FileInputStream fis = new FileInputStream(RESOURCES_PATH + "linkmanager.properties");
+			props.load(fis);
+
+			// Access properties
+			APP_NAME = props.getProperty("name");
+			APP_VERSION = props.getProperty("version");
+			APP_JRE = props.getProperty("jre");
+
+		} catch (IOException e) {
+			System.err.println("Error reading properties file: " + e.getMessage());
+		}
+	}
+
+	/**
+	 * Reads the configuration INI file one time at launch such that the values can
+	 * be used anywhere else in the program.
 	 * 
 	 */
 	private static void initAppConfigValues() {
 
 		try {
-			AppConfig.init("./src/main/resources/config.ini");
+			AppConfig.init(RESOURCES_PATH + "config.ini");
 
 			// Accessible from anywhere in the program.
 			CUSTOM_VAR = AppConfig.getInstance().getString("global", "customVarValue", "CUSTOM_VAR");
@@ -116,10 +131,49 @@ public class LinkManager {
 	}
 
 	/**
+	 * Reads the session xml one time at launch such that the values can be used
+	 * anywhere else in the program.
+	 * 
+	 */
+	private static void initSessionFile() {
+		try {
+			FILE = new File(RESOURCES_PATH + "session.xml");
+		} catch (NullPointerException ex) {
+			String errMessage = "An error occurred when trying to load the session file.";
+			JOptionPane.showMessageDialog(LinkManager.FRAME, errMessage, "I/O Exception", JOptionPane.ERROR_MESSAGE);
+			System.exit(1);
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(LinkManager.FRAME, ex.getLocalizedMessage(), "Unknown Error",
+					JOptionPane.ERROR_MESSAGE);
+			System.exit(1);
+		}
+	}
+
+	/**
+	 * Reads the session xml one time at launch such that the values can be used
+	 * anywhere else in the program.
+	 * 
+	 */
+	private static void initReadMeFile() {
+		try {
+			README = new File(RESOURCES_PATH + "README.txt");
+		} catch (NullPointerException ex) {
+			String errMessage = "An error occurred when trying to load the README file.";
+			JOptionPane.showMessageDialog(LinkManager.FRAME, errMessage, "I/O Exception", JOptionPane.ERROR_MESSAGE);
+			System.exit(1);
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(LinkManager.FRAME, ex.getLocalizedMessage(), "Unknown Error",
+					JOptionPane.ERROR_MESSAGE);
+			System.exit(1);
+		}
+	}
+
+	/**
 	 * Creates and displays the main GUI.
 	 * 
 	 */
 	private static void createAndShowGUI() {
+
 		LinkManager.isLocked = false;
 
 		// Create Windows look and feel
@@ -467,8 +521,9 @@ public class LinkManager {
 		JOptionPane.showMessageDialog(FRAME, new JLabel(
 				"<html><hr><pre style='font-family: consolas, courier new, courier, monospace; font-size: 8.9px;'>"
 						+ "<br>Link Manager" + "<br>" + "<br>Written by: Ian A. Gardea" + "<br>Version: "
-						+ LinkManager.VERSION + "<br>" + "<br>Current JRE:     " + System.getProperty("java.version")
-						+ "<br>Recommended JRE: " + LinkManager.JRE + "<br>" + "<br></pre><hr></html>"),
+						+ LinkManager.APP_VERSION + "<br>" + "<br>Current JRE:     "
+						+ System.getProperty("java.version") + "<br>Recommended JRE: " + LinkManager.APP_JRE + "<br>"
+						+ "<br></pre><hr></html>"),
 				"About Link Manager", JOptionPane.INFORMATION_MESSAGE);
 	}
 
