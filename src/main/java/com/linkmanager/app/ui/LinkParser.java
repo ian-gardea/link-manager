@@ -6,10 +6,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
- * Full credit for this code goes to Stefan Cordes and stackoverflow.com
- * Mar 23 '09 at 9:58
+ * Full credit for this code goes to Stefan Cordes and stackoverflow.com Mar 23
+ * '09 at 9:58
  * 
- * This class will interpret a shortcut's meta-data, and extract the true target.
+ * This class will interpret a shortcut's meta-data, and extract the true
+ * target.
  * 
  */
 public class LinkParser {
@@ -56,7 +57,7 @@ public class LinkParser {
 		// get the file attributes byte
 		final int file_atts_offset = 0x18;
 		byte file_atts = link[file_atts_offset];
-		byte is_dir_mask = (byte)0x10;
+		byte is_dir_mask = (byte) 0x10;
 		if ((file_atts & is_dir_mask) > 0) {
 			isDirectory = true;
 		} else {
@@ -65,7 +66,7 @@ public class LinkParser {
 
 		// if the shell settings are present, skip them
 		final int shell_offset = 0x4c;
-		final byte has_shell_mask = (byte)0x01;
+		final byte has_shell_mask = (byte) 0x01;
 		int shell_len = 0;
 		if ((flags & has_shell_mask) > 0) {
 			// the plus 2 accounts for the length marker itself
@@ -79,7 +80,7 @@ public class LinkParser {
 		int file_location_info_flag = link[file_start + file_location_info_flag_offset_offset];
 		isLocal = (file_location_info_flag & 2) == 0;
 		// get the local volume and local system values
-		//final int localVolumeTable_offset_offset = 0x0C;
+		// final int localVolumeTable_offset_offset = 0x0C;
 		final int basename_offset_offset = 0x10;
 		final int networkVolumeTable_offset_offset = 0x14;
 		final int finalname_offset_offset = 0x18;
@@ -112,8 +113,8 @@ public class LinkParser {
 	}
 
 	/**
-	 * Convert two bytes into a short note, this is little endian because it's
-	 * for an Intel only OS.
+	 * Convert two bytes into a short note, this is little endian because it's for
+	 * an Intel only OS.
 	 */
 	private static int bytes2short(byte[] bytes, int off) {
 		return ((bytes[off + 1] & 0xff) << 8) | (bytes[off] & 0xff);

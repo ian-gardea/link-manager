@@ -24,7 +24,7 @@ public class TableTransferHandler extends MouseAdapter {
 	 * Enables the transfer listener.
 	 * 
 	 * @param table - the JTable to add the listener(s) to.
-	 * @param pane - the CustomLinkPane containing the JTable.
+	 * @param pane  - the CustomLinkPane containing the JTable.
 	 */
 	public static void enableTransferListeners(JTable table, CustomLinkPane pane) {
 		handler = new TableTransferHandler(table, pane);
@@ -36,7 +36,7 @@ public class TableTransferHandler extends MouseAdapter {
 	 * Disables the transfer listener.
 	 * 
 	 * @param table - the JTable to add the listener(s) to.
-	 * @param pane - the CustomLinkPane containing the JTable.
+	 * @param pane  - the CustomLinkPane containing the JTable.
 	 */
 	public static void disableTransferListeners(JTable table, CustomLinkPane pane) {
 		table.removeMouseListener(handler);
@@ -52,7 +52,7 @@ public class TableTransferHandler extends MouseAdapter {
 	 * This constructor will initialize the JTable and CustomLinkPane.
 	 * 
 	 * @param table - the JTable to add the listener(s) to.
-	 * @param pane - the CustomLinkPane containing the JTable.
+	 * @param pane  - the CustomLinkPane containing the JTable.
 	 */
 	public TableTransferHandler(JTable table, CustomLinkPane pane) {
 		if (!(table.getModel() instanceof DefaultTableModel)) {
@@ -73,18 +73,18 @@ public class TableTransferHandler extends MouseAdapter {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		pressIndex = table.rowAtPoint(e.getPoint());
-		
+
 		int row = table.getSelectedRow();
-        int col = table.getSelectedColumn();
-        Rectangle rect = table.getCellRect(row, col, true);
-		
-        // If a row is double-clicked, prompt to re-name the tab.
+		int col = table.getSelectedColumn();
+		Rectangle rect = table.getCellRect(row, col, true);
+
+		// If a row is double-clicked, prompt to re-name the tab.
 		if (rect != null && rect.contains(e.getPoint()) && e.getClickCount() == 2) {
 			pane.getLinkList().promptRenameLink(pressIndex);
 			pane.refresh();
 		}
 		// If row is right-clicked, show the currently assigned target.
-		if(rect != null && rect.contains(e.getPoint()) && SwingUtilities.isRightMouseButton(e)){
+		if (rect != null && rect.contains(e.getPoint()) && SwingUtilities.isRightMouseButton(e)) {
 			pane.getLinkList().promptRetargetLink(pressIndex);
 		}
 	}
@@ -98,7 +98,7 @@ public class TableTransferHandler extends MouseAdapter {
 	public void mousePressed(MouseEvent e) {
 		pressIndex = table.rowAtPoint(e.getPoint());
 	}
-	
+
 	/**
 	 * Mouse released event listener for dragging links.
 	 * 
@@ -120,20 +120,19 @@ public class TableTransferHandler extends MouseAdapter {
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		mouseReleased(e);
-		pressIndex = releaseIndex;      
+		pressIndex = releaseIndex;
 	}
 
 	/**
 	 * This function will perform the re-order operation.
 	 */
 	private void reorder() {
-		try{
+		try {
 			DefaultTableModel model = (DefaultTableModel) table.getModel();
 			model.moveRow(pressIndex, pressIndex, releaseIndex);
 			pane.getLinkList().swapElements(pressIndex, releaseIndex);
-		}
-		catch (Exception e) {
-			
+		} catch (Exception e) {
+
 		}
 	}
 }

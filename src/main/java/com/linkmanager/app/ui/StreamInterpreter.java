@@ -20,12 +20,11 @@ class StreamInterpreter extends Thread {
 			BufferedReader br = new BufferedReader(isr);
 			String line = null;
 			while ((line = br.readLine()) != null) {
-				System.out.println(type + ">" + line);  
+				System.out.println(type + ">" + line);
 			}
- 
-		} 
-		catch (IOException ioe) {
-			ioe.printStackTrace();  
+
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
 		}
 	}
 }
