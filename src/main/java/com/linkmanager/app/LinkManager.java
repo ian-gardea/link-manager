@@ -52,9 +52,9 @@ public class LinkManager {
 	private static String APP_VERSION;
 	private static String APP_JRE;
 
-	private static File FILE;
-	private static File README;
-	private static JFrame FRAME;
+	private static File SESSION_FILE;
+	private static File README_FILE;
+	private static JFrame APP_FRAME;
 
 	private final static String RESOURCES_PATH = "./src/main/resources/";
 
@@ -75,12 +75,11 @@ public class LinkManager {
 	public LinkManager() {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				FRAME = new JFrame(APP_NAME + " v" + APP_VERSION);
-
 				initLinkManagerProperties();
 				initAppConfigValues();
 				initSessionFile();
 				initReadMeFile();
+
 				createAndShowGUI();
 			}
 		});
@@ -137,13 +136,13 @@ public class LinkManager {
 	 */
 	private static void initSessionFile() {
 		try {
-			FILE = new File(RESOURCES_PATH + "session.xml");
+			SESSION_FILE = new File(RESOURCES_PATH + "session.xml");
 		} catch (NullPointerException ex) {
 			String errMessage = "An error occurred when trying to load the session file.";
-			JOptionPane.showMessageDialog(LinkManager.FRAME, errMessage, "I/O Exception", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(LinkManager.APP_FRAME, errMessage, "I/O Exception", JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(LinkManager.FRAME, ex.getLocalizedMessage(), "Unknown Error",
+			JOptionPane.showMessageDialog(LinkManager.APP_FRAME, ex.getLocalizedMessage(), "Unknown Error",
 					JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
@@ -156,13 +155,13 @@ public class LinkManager {
 	 */
 	private static void initReadMeFile() {
 		try {
-			README = new File(RESOURCES_PATH + "README.txt");
+			README_FILE = new File(RESOURCES_PATH + "README.txt");
 		} catch (NullPointerException ex) {
 			String errMessage = "An error occurred when trying to load the README file.";
-			JOptionPane.showMessageDialog(LinkManager.FRAME, errMessage, "I/O Exception", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(LinkManager.APP_FRAME, errMessage, "I/O Exception", JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(LinkManager.FRAME, ex.getLocalizedMessage(), "Unknown Error",
+			JOptionPane.showMessageDialog(LinkManager.APP_FRAME, ex.getLocalizedMessage(), "Unknown Error",
 					JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
@@ -174,8 +173,9 @@ public class LinkManager {
 	 */
 	private static void createAndShowGUI() {
 
-		LinkManager.isLocked = false;
-
+		// Frame
+		APP_FRAME = new JFrame(APP_NAME + " v" + APP_VERSION);
+		
 		// Create Windows look and feel
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -188,16 +188,16 @@ public class LinkManager {
 		tabbedList = new CustomTabList();
 
 		// Load the existing configuration, or start a blank session if not defined.
-		if (FILE.exists()) {
-			tabbedList.revertDocument(FILE);
+		if (SESSION_FILE.exists()) {
+			tabbedList.revertDocument(SESSION_FILE);
 		} else {
 			showInstructions();
-			tabbedList.newDocument(FILE);
+			tabbedList.newDocument(SESSION_FILE);
 		}
 
 		// Main menu
 		JMenuBar jmbMain = new JMenuBar();
-		FRAME.setJMenuBar(jmbMain);
+		APP_FRAME.setJMenuBar(jmbMain);
 
 		// Right-click context menu.
 		JPopupMenu menuPopup = new JPopupMenu();
@@ -295,11 +295,13 @@ public class LinkManager {
 		jmbMain.add(Box.createHorizontalGlue());
 		jmbMain.add(jmnHelp);
 
+		LinkManager.isLocked = false;
+		
 		// Menu listeners
 		jmiNew.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				if (!LinkManager.isLocked) {
-					tabbedList.newDocument(FILE);
+					tabbedList.newDocument(SESSION_FILE);
 					LinkManager.isLocked = false;
 					jmiLock.setText("Lock");
 				} else {
@@ -310,7 +312,7 @@ public class LinkManager {
 		jmiSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				if (!LinkManager.isLocked) {
-					tabbedList.saveDocument(FILE);
+					tabbedList.saveDocument(SESSION_FILE);
 				} else {
 					LinkManager.showLockedMessage();
 				}
@@ -319,7 +321,7 @@ public class LinkManager {
 		jmiRevert.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				if (!LinkManager.isLocked) {
-					tabbedList.revertDocument(FILE);
+					tabbedList.revertDocument(SESSION_FILE);
 				} else {
 					LinkManager.showLockedMessage();
 				}
@@ -500,17 +502,17 @@ public class LinkManager {
 		});
 
 		// Add content to the JFrame.
-		FRAME.add(tabbedList);
+		APP_FRAME.add(tabbedList);
 
 		// Set JFRAME preferences.
-		FRAME.setPreferredSize(new Dimension(GUI_WIDTH, GUI_HEIGHT));
-		FRAME.setResizable(false);
-		FRAME.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		FRAME.setVisible(true);
+		APP_FRAME.setPreferredSize(new Dimension(GUI_WIDTH, GUI_HEIGHT));
+		APP_FRAME.setResizable(false);
+		APP_FRAME.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		APP_FRAME.setVisible(true);
 
 		// Position the GUI in the middle of the screen when started.
-		FRAME.pack();
-		FRAME.setLocationRelativeTo(null);
+		APP_FRAME.pack();
+		APP_FRAME.setLocationRelativeTo(null);
 	}
 
 	/**
@@ -518,7 +520,7 @@ public class LinkManager {
 	 * 
 	 */
 	public static void showAbout() {
-		JOptionPane.showMessageDialog(FRAME, new JLabel(
+		JOptionPane.showMessageDialog(APP_FRAME, new JLabel(
 				"<html><hr><pre style='font-family: consolas, courier new, courier, monospace; font-size: 8.9px;'>"
 						+ "<br>Link Manager" + "<br>" + "<br>Written by: Ian A. Gardea" + "<br>Version: "
 						+ LinkManager.APP_VERSION + "<br>" + "<br>Current JRE:     "
@@ -546,21 +548,21 @@ public class LinkManager {
 			public void mouseClicked(MouseEvent e) {
 				if (Desktop.isDesktopSupported()) {
 					try {
-						URI uri = Paths.get(README.getCanonicalPath()).toUri();
+						URI uri = Paths.get(README_FILE.getCanonicalPath()).toUri();
 						uri.normalize();
 						Desktop.getDesktop().browse(uri);
 					} catch (IOException ex) {
-						JOptionPane.showMessageDialog(LinkManager.FRAME, ex.getLocalizedMessage(), "I/O Exception",
+						JOptionPane.showMessageDialog(LinkManager.APP_FRAME, ex.getLocalizedMessage(), "I/O Exception",
 								JOptionPane.ERROR_MESSAGE);
 					} catch (Exception ex) {
-						JOptionPane.showMessageDialog(LinkManager.FRAME, ex.getLocalizedMessage(), "Unknown Error",
+						JOptionPane.showMessageDialog(LinkManager.APP_FRAME, ex.getLocalizedMessage(), "Unknown Error",
 								JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			}
 		});
 
-		JOptionPane.showMessageDialog(FRAME, instructions, "User Instructions", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(APP_FRAME, instructions, "User Instructions", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	/**
@@ -568,7 +570,7 @@ public class LinkManager {
 	 * 
 	 */
 	public static void showLockedMessage() {
-		JOptionPane.showMessageDialog(LinkManager.FRAME,
+		JOptionPane.showMessageDialog(LinkManager.APP_FRAME,
 				"The operation could not be performed because editing is disabled.\n"
 						+ "To re-enable editing, select File/Unlock, or press CTRL + L.",
 				"Notification", JOptionPane.WARNING_MESSAGE);
@@ -583,7 +585,7 @@ public class LinkManager {
 	 * @return - the configuration file object.
 	 */
 	public static File getConfigFile() {
-		return FILE;
+		return SESSION_FILE;
 	}
 
 	/**
@@ -599,7 +601,7 @@ public class LinkManager {
 	 * @return the GUI JFRAME.
 	 */
 	public static JFrame getFrame() {
-		return LinkManager.FRAME;
+		return LinkManager.APP_FRAME;
 	}
 
 	/**
