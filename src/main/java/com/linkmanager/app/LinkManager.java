@@ -42,11 +42,14 @@ import java.util.Properties;
  * commands. See the README documentation for a full description of features.
  * 
  * @author Ian Gardea
- * @version 1.0.3
+ * @version see properties file
  * 
  */
 public class LinkManager {
 	/* static variables: only need to be initialized once */
+	
+	private final static String RESOURCES_PATH = "./src/main/resources/";
+	
 	// properties
 	private static String APP_NAME;
 	private static String APP_VERSION;
@@ -56,12 +59,10 @@ public class LinkManager {
 	private static File README_FILE;
 	private static JFrame APP_FRAME;
 
-	private final static String RESOURCES_PATH = "./src/main/resources/";
-
 	private static CustomTabList tabbedList = null;
 	private static boolean isLocked;
 
-	// user configuration variables.
+	// public user configuration variables.
 	public static int SLEEP_TIME;
 	public static int GUI_WIDTH;
 	public static int GUI_HEIGHT;
